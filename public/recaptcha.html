@@ -2,8 +2,20 @@
 <html>
 <head>
   <title>recaptcha</title>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <h1>recaptcha</h1>
+  <form id="demo-form" action="/recaptcha" method="POST">
+    <input name="name" value="">
+    <button class="g-recaptcha" data-sitekey="6LcLVm8UAAAAAIGVtKDG8bCfEvP2I-myOnJHowxn" data-callback='onSubmit'>Submit</button>
+    <br/>
+  </form>
+
+<script>
+  function onSubmit() {
+    document.getElementById("demo-form").submit();
+  }
+</script>
 </body>
 </html>
