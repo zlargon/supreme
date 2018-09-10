@@ -1,5 +1,6 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const verify = require('../lib/grecaptcha-verify');
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
@@ -11,7 +12,13 @@ router.get('/recaptcha', (req, res, next) => {
 });
 
 router.post('/recaptcha', (req, res, next) => {
-  console.log(req.body);
+  const secret = '6LcLVm8UAAAAAJPqEiifvZogYGv-PZ_TNZKMhUYS';
+  const response = req.body['g-recaptcha-response'];
+
+  verify(secret, response)
+    .then(data => {
+      res.status(200).json([req.body, data]);
+    });
 });
 
 module.exports = router;
