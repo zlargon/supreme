@@ -2,11 +2,17 @@
 <html>
 <head>
   <title>checkout</title>
+  <script src="./js/jquery-1.8.2.js"></script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <h1>checkout</h1>
   <form id="checkout_form" novalidate="novalidate" class="simple_form new_order" action="/checkout" accept-charset="UTF-8" method="post">
+
+    <!-- 1. utf8 -->
     <input name="utf8" type="hidden" value="&#x2713;" />
+
+    <!-- 2. authenticity_token -->
     <input type="hidden" name="authenticity_token" value="A8FYgbI5Bgjfx1jtP+mcrDMIe84WLmKeTd2vytIir70bNJpl2RokFe4kgN78V+W3kVf/du5DR55kBt89Q7TWAQ==" />
     <div id="cart-header">
       <div id="tabs">
@@ -22,37 +28,53 @@
           <p>must be the same as your credit card address</p>
           <div class="input string required order_billing_name">
             <label class="string required control-label floaty" for="order_billing_name">name</label>
+
+            <!-- 3. order[billing_name] (#order_billing_name) -->
             <input first_and_last="true" placeholder="name" class="string required" type="text" name="order[billing_name]" id="order_billing_name" />
           </div>
           <div class="input email required order_email">
             <label class="email required control-label floaty" for="order_email">email</label>
+
+            <!-- 4. order[email] (#order_email) -->
             <input placeholder="email" class="string email required" type="email" name="order[email]" id="order_email" />
           </div>
           <div class="input string required order_tel">
             <label class="string required control-label floaty" for="order_tel">tel</label>
+
+            <!-- 5. order[tel] (#order_tel) -->
             <input tel="true" placeholder="tel" class="string required" type="text" name="order[tel]" id="order_tel" />
           </div>
           <div id="address_row">
             <div class="input string required order_billing_address">
               <label class="string required control-label floaty" for="bo">address</label>
+
+              <!-- 6. order[billing_address] (#bo) -->
               <input id="bo" placeholder="address" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false" class="string required" type="text" name="order[billing_address]" />
             </div>
             <div class="input string optional order_billing_address_2">
               <label class="string optional control-label floaty" for="oba3">apt, unit, etc</label>
+
+              <!-- 7. order[billing_address_2] (#oba3) -->
               <input id="oba3" placeholder="apt, unit, etc" class="string optional" type="text" name="order[billing_address_2]" />
             </div>
           </div>
           <div id="zip_city_state_row">
             <div class="input string required order_billing_zip">
               <label id="zip_label" class="string required control-label floaty" for="order_billing_zip">zip</label>
+
+              <!-- 8. order[billing_zip] (#order_billing_zip) -->
               <input autocomplete="off" zipcode="true" size="5" placeholder="zip" class="string required" type="text" name="order[billing_zip]" id="order_billing_zip" />
             </div>
             <div class="input string required order_billing_city">
               <label class="string required control-label floaty" for="order_billing_city">city</label>
+
+              <!-- 9. order[billing_city] (#order_billing_city) -->
               <input placeholder="city" class="string required" type="text" name="order[billing_city]" id="order_billing_city" />
             </div>
             <div class="input select optional order_billing_state">
               <label id="state_label" class="select optional control-label floaty" for="order_billing_state">state</label>
+
+              <!-- 10. order[billing_state] (#order_billing_state) -->
               <select class="select optional" name="order[billing_state]" id="order_billing_state">
                 <option value="AL">AL</option>
                 <option value="AK">AK</option>
@@ -118,15 +140,25 @@
           </div>
           <div class="input select optional order_billing_country">
             <label class="select optional control-label floaty" for="order_billing_country">country</label>
+
+            <!-- 11. order[billing_country] (order_billing_country) -->
             <select class="select optional" name="order[billing_country]" id="order_billing_country">
               <option selected="selected" value="USA">USA</option>
               <option value="CANADA">CANADA</option>
             </select>
           </div>
+
+          <!-- 12. asec (#asec) -->
           <input type="hidden" name="asec" id="asec" value="Rmasn" />
+
+          <!-- 13. same_as_billing_address (#same_as_billing_address) -->
           <input type="hidden" name="same_as_billing_address" id="same_as_billing_address" value="1" />
+
+          <!-- 14. store_credit_id (#store_credit_id) -->
           <input type="hidden" name="store_credit_id" id="store_credit_id" value="" />
           <div class="input string optional store-address-checkbox">
+
+            <!-- 15. store_address (#store_address) [OPTIONAL] -->
             <input type="checkbox" name="store_address" id="store_address" value="1" class="checkbox" />
             <label class="string optional control-label" for="store_address" id="store-address">save address for future orders</label>
           </div>
@@ -140,11 +172,15 @@
           <div id="card_details">
             <div class="input string required credit_card_number">
               <label class="nlb string required sr-label floaty" for="nnaerb">number</label>
+
+              <!-- 16. credit_card[nlb] (#nnaerb) -->
               <input placeholder="number" id="nnaerb" name="credit_card[nlb]" class="string required" type="text" />
             </div>
             <div id="cvv_row">
               <div class="input string required credit_card_month">
                 <label class="string required control-label floaty" for="credit_card_month">exp. date</label>
+
+                <!-- 17. credit_card[month] (#credit_card_month) -->
                 <select name="credit_card[month]" id="credit_card_month">
                   <option value="01">01</option>
                   <option value="02">02</option>
@@ -159,6 +195,8 @@
                   <option value="11">11</option>
                   <option value="12">12</option>
                 </select>
+
+                <!-- 18. credit_card[year] (#credit_card_year) -->
                 <select name="credit_card[year]" id="credit_card_year">
                   <option value="2018">2018</option>
                   <option value="2019">2019</option>
@@ -175,6 +213,8 @@
               </div>
               <div id="rmae" class="input string required credit_card_verification_value">
                 <label class="nclb string required sr-label floaty" for="orcer">CVV</label>
+
+                <!-- 19. credit_card[rvv] (#orcer) -->
                 <input placeholder="CVV" id="orcer" name="credit_card[rvv]" class="string required" maxlength="4" size="4" type="text" />
               </div>
             </div>
@@ -186,10 +226,17 @@
           </div>
           <p>
             <label class="has-checkbox terms">
+              <!-- 20. order[terms] -->
               <input name="order[terms]" type="hidden" value="0" />
+
+              <!-- 21. order[terms] (#order_terms) [OPTIONAL] -->
               <input class="checkbox" type="checkbox" value="1" name="order[terms]" id="order_terms" />I have read and agree to the <a href="http://www.supremenewyork.com/shop/terms">terms & conditions</a>, and accept the return policy<span class="terms-error">please agree to the terms</span></label>
           </p>
-          <div class="g-recaptcha" data-callback="checkoutAfterCaptcha" data-sitekey="6LeWwRkUAAAAAOBsau7KpuC9AV-6J8mhw4AjC3Xz" data-size="invisible"></div>
+
+          <!-- 22. g-recaptcha-response -->
+          <div class="g-recaptcha" data-callback="checkoutAfterCaptcha" data-sitekey="6LcLVm8UAAAAAIGVtKDG8bCfEvP2I-myOnJHowxn" data-size="invisible"></div>
+
+          <!-- 23. credit_card[vval] (#numbc) -->
           <input id="numbc" name="credit_card[vval]" type="text" />
         </fieldset>
       </div>
@@ -200,5 +247,23 @@
         <input type="submit" name="commit" value="process payment" class="button " disable_with="please wait..." /><a class="button cancel" href="http://www.supremenewyork.com/shop">cancel</a></div>
     </div>
   </form>
+
+<script>
+$('#checkout_form').on('submit', (e) => {
+  e.preventDefault();
+  grecaptcha.execute();
+});
+
+function checkoutAfterCaptcha (token) {
+  console.log(token);
+  $.post('/checkout.json', $('#checkout_form').serialize()).done((data) => {
+    console.log(data[0]);
+    console.log(Object.keys(data[0]).length);
+
+    console.log(data[1]);
+    grecaptcha.reset();
+  });
+}
+</script>
 </body>
 </html>
