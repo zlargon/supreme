@@ -13,6 +13,11 @@ router.get('/checkout', (req, res, next) => {
   res.sendFile('./public/checkout.html', { root: __dirname + '/..'});
 });
 
+router.get('/checkout.js', (req, res, next) => {
+  // return the information of the shipping fee
+  res.status(200).json(req.query);
+});
+
 router.post('/checkout.json', (req, res, next) => {
   const response = req.body['g-recaptcha-response'];
 

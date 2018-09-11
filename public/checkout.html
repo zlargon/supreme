@@ -365,6 +365,38 @@ $.validator.addMethod('zipcode', function(value) {
   }
 });
 
+// updateShipping
+$("#order_billing_country, #order_billing_state").on('change', updateShipping);
+function updateShipping () {
+
+  if (!window.update_shipping_cnt) {
+    window.update_shipping_cnt = 0;
+  }
+  window.update_shipping_cnt += 1;
+  if (window.update_shipping_cnt > 7) {
+    return false;
+  }
+
+  const data = $('form#checkout_form')
+    .serializeArray()
+    .reduce((res, item) => {
+      if (!/number|verification_value/.test(item.name)) {
+        return Object.assign(res, { [item.name]: item.value })
+      }
+      return res;
+    }, {});
+  data['cnt'] = window.update_shipping_cnt;
+
+  return $.ajax({
+    url: "checkout.js",
+    dataType: 'html',
+    data,
+    success: (data) => {
+      console.log(JSON.parse(data));
+    }
+  });
+};
+
 </script>
 </body>
 </html>
