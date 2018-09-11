@@ -397,6 +397,49 @@ function updateShipping () {
   });
 };
 
+// update order_billing_city, order_billing_state by zip code
+$('#order_billing_zip').on('keyup', function(e) {
+  const original_zip = $(this).val();
+  let zip = original_zip;
+
+  if (zip.length >= 4) {
+    if (zip.length > 4) {
+      zip = zip.substring(0, 4);
+    }
+
+    return $.ajax({
+      url: "https://supreme-images.s3.amazonaws.com/us-zipcodes/" + zip + ".js",
+      success: function(data, textStatus, jqXHR) {
+        // console.log(data);
+
+        const checkout_zipcodes = {};
+        checkout_zipcodes[zip] = data;
+
+        if (original_zip.length === 5) {
+          const results = [];
+          for (let i = 0, len = data.length; i < len; i++) {
+            const city = data[i];
+            if (city.zipcode === original_zip) {
+              $('#order_billing_city').val(city.city);
+              $('#order_billing_state').val(city.state);
+              // floatingLabel.evaluateInputs();
+              results.push(updateShipping());
+            } else {
+              results.push(void 0);
+            }
+          }
+
+          // console.log(results);
+          return results;
+        }
+      },
+      cache: true,
+      dataType: 'jsonp',
+      jsonpCallback: 'w'
+    });
+  }
+});
+
 </script>
 </body>
 </html>
