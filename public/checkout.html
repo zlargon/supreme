@@ -4,6 +4,7 @@
   <title>checkout</title>
   <script src="./js/jquery-1.8.2.js"></script>
   <script src="https://unpkg.com/jquery-mask-plugin@1.14.11/dist/jquery.mask.js"></script>
+  <script src="https://unpkg.com/jquery-validation@1.17.0/dist/jquery.validate.js"></script>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
@@ -316,6 +317,52 @@ $('#cnb, #nnaerb').on('keyup', function(e) {
     }).trigger('focus.mask');
   }
   return $('#cart-vval, #cvc').removeClass('visa').removeClass('master').removeClass('american_express').addClass(cctype);
+});
+
+// jquery-validation
+var FIRST_AND_LAST_NAME_FORMAT = /^[A-Za-z\-\.&#39;]+( +[A-Za-z\-\.&#39;]+)+$/;
+var TEL_FORMAT = /^[0-9]{10}$/;
+var STATE_FORMAT = /^[a-zA-Z]{2}$/;
+var CANADA_ZIP = /[ABCEGHJKLMNPRSTVXY]\d[A-Z] ?\d[A-Z]\d/;
+var US_ZIP = /^\d{5}([\-]\d{4})?$/;
+
+$('#checkout_form').validate({
+  onsubmit: false,
+  errorElement: 'span',
+  highlight: function(element, errorClass, validClass) {
+    return $(element).parent().addClass('error');
+  },
+  unhighlight: function(element, errorClass, validClass) {
+    return $(element).parent().removeClass('error');
+  },
+  errorPlacement: function(error, element) {
+    return error.appendTo(element.parent());
+  },
+  errorClass: 'error js',
+  success: function(label) {
+    return label.remove();
+  }
+});
+$.validator.addMethod('first_and_last', function(value) {
+  return FIRST_AND_LAST_NAME_FORMAT.test(value);
+}, 'must contain first and last name');
+
+$.validator.addMethod('tel', function(value) {
+  return TEL_FORMAT.test(value.replace(/-|\(|\)|\s/g, ''));
+}, 'must be a 10-digit phone number');
+
+$.validator.addMethod('zipcode', function(value) {
+  if ($("#order_billing_country").val() === 'CANADA') {
+    return CANADA_ZIP.test(value.toUpperCase());
+  } else {
+    return US_ZIP.test(value);
+  }
+}, function() {
+  if ($("#order_billing_country").val() === 'CANADA') {
+    return 'must be a valid canadian zipcode';
+  } else {
+    return "must be a 5 digit US zipcode";
+  }
 });
 
 </script>
