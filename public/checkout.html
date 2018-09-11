@@ -3,6 +3,7 @@
 <head>
   <title>checkout</title>
   <script src="./js/jquery-1.8.2.js"></script>
+  <script src="https://unpkg.com/jquery-mask-plugin@1.14.11/dist/jquery.mask.js"></script>
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
@@ -220,12 +221,22 @@
             </div>
           </div>
           <div id="cart-totals">
-            <div><span class="label-total">cart total</span><span class="field" id="subtotal">$148</span></div>
-            <div><span class="label-total">ship &amp; handle</span><span class="field" id="shipping">$10</span></div>
-            <div><span class="label-total"><strong>order total</strong></span><span><strong class="field" id="total">$158</strong></span></div>
+            <div>
+              <span class="label-total">cart total</span>
+              <span class="field" id="subtotal">$148</span>
+            </div>
+            <div>
+              <span class="label-total">ship &amp; handle</span>
+              <span class="field" id="shipping">$10</span>
+            </div>
+            <div>
+              <span class="label-total"><strong>order total</strong></span>
+              <span><strong class="field" id="total">$158</strong></span>
+            </div>
           </div>
           <p>
             <label class="has-checkbox terms">
+
               <!-- 20. order[terms] -->
               <input name="order[terms]" type="hidden" value="0" />
 
@@ -264,6 +275,49 @@ function checkoutAfterCaptcha (token) {
     grecaptcha.reset();
   });
 }
+
+function creditCardTypeFromNumber (num) {
+  num = num.replace(/[^\d]/g, '');
+  if (num.match(/^5[1-5]\d/)) {
+    return 'mastercard';
+  } else if (num.match(/^4\d/) || num.match(/^4\d/)) {
+    return 'visa';
+  } else if (num.match(/^3[47]\d/)) {
+    return 'american_express';
+  } else if (num.match(/^35(28|29|[3-8]\d)\d$/)) {
+    return 'jcb';
+  }
+  return 'UNKNOWN';
+};
+
+// jquery-mask-plugin
+$('#order_tel').mask('000-000-0000', {
+  autoclear: false
+});
+
+$('#cnb, #nnaerb').on('keyup', function(e) {
+  e.preventDefault();
+
+  const field = $(this);
+  const cctype = creditCardTypeFromNumber(field.val());
+
+  if (cctype === "UNKNOWN") {
+    $('#cnb, #nnaerb').unmask();
+    return;
+  }
+
+  if (cctype === "american_express") {
+    $('#cnb, #nnaerb').mask('9999 999999 99999', {
+      autoclear: false
+    }).trigger('focus.mask');
+  } else {
+    $('#cnb, #nnaerb').mask('9999 9999 9999 9999', {
+      autoclear: false
+    }).trigger('focus.mask');
+  }
+  return $('#cart-vval, #cvc').removeClass('visa').removeClass('master').removeClass('american_express').addClass(cctype);
+});
+
 </script>
 </body>
 </html>
